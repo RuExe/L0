@@ -1,15 +1,35 @@
 package services
 
-import "L0/core"
+import (
+	core "L0/core"
+	"L0/subscriber/repositories"
+	"L0/subscriber/storages"
+)
 
 type OrderService struct {
-	orders map[string]core.Order
+	orderRepository *repositories.OrderRepository
+	cacheStorage    *storages.CacheOrderStorage
 }
 
-func (s *OrderService) Add(order core.Order) {
-	s.orders[order.OrderUid] = order
+func NewOrderService(repository *repositories.OrderRepository) *OrderService {
+	test, _ := repository.GetById("1")
+
+	storage := &storages.CacheOrderStorage{
+		Orders: map[string]core.Order{
+			"1": *test,
+		},
+	}
+
+	return &OrderService{
+		orderRepository: repository,
+		cacheStorage:    storage,
+	}
 }
 
-func (s OrderService) Get(id string) core.Order {
-	return s.orders[id]
+func (s *OrderService) AddOrder(order core.Order) {
+	s.cacheStorage.Add(order)
+}
+
+func (s OrderService) GetOrder(id string) (core.Order, error) {
+	return s.cacheStorage.Get(id)
 }

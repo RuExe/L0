@@ -6,26 +6,22 @@ import (
 )
 
 func CreateFakeOrder() core.Order {
-	dateTime, _ := time.Parse("2006-01-02T15:04:05-0700", "2021-11-26T06:22:19Z")
-
-	order := core.Order{
-		OrderUid:          "123321",
+	return core.Order{
+		OrderUid:          "1",
 		TrackNumber:       "WBILMTESTTRACK",
 		Entry:             "WBIL",
-		Delivery:          createFakeDelivery(),
-		Payment:           createFakePayment(),
-		Items:             createFakeItems(1),
+		Delivery:          "createFakeDelivery()",
+		Payment:           "createFakePayment()",
+		Items:             "createFakeItems(1)",
 		Locale:            "en",
 		InternalSignature: "",
 		CustomerId:        "test",
 		DeliveryService:   "meest",
 		Shardkey:          "9",
 		SmId:              99,
-		DateCreated:       dateTime,
+		DateCreated:       time.Date(2021, 11, 26, 5, 22, 19, 0, time.UTC),
 		OofShard:          "1",
 	}
-
-	return order
 }
 
 func createFakeDelivery() core.Delivery {

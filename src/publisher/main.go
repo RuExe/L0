@@ -1,6 +1,7 @@
 package main
 
 import (
+	"L0/core"
 	"L0/publisher/factories"
 	"encoding/json"
 	"flag"
@@ -9,12 +10,12 @@ import (
 )
 
 func main() {
-	url := nats.DefaultURL
+	config := core.NewConfig()
 
 	log.SetFlags(0)
 	flag.Parse()
 
-	nc, err := nats.Connect(url)
+	nc, err := nats.Connect(config.Url)
 	if err != nil {
 		log.Fatal(err)
 	}

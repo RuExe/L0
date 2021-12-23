@@ -3,12 +3,12 @@ package core
 import "time"
 
 type Order struct {
-	OrderUid    string
-	TrackNumber string
-	Entry       string
-	Delivery
-	Payment
-	Items             []Item
+	OrderUid          string
+	TrackNumber       string
+	Entry             string
+	Delivery          string
+	Payment           string
+	Items             string
 	Locale            string
 	InternalSignature string
 	CustomerId        string
