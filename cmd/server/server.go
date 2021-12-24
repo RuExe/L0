@@ -1,18 +1,18 @@
-package classes
+package server
 
 import (
-	"L0/core"
-	"L0/subscriber/services"
+	"L0/internal/config"
+	"L0/internal/service"
 	"encoding/json"
 	"net/http"
 )
 
 type Server struct {
-	config  *core.Config
-	service *services.OrderService
+	config  *config.Config
+	service *service.OrderService
 }
 
-func NewServer(config *core.Config, service *services.OrderService) *Server {
+func NewServer(config *config.Config, service *service.OrderService) *Server {
 	return &Server{
 		config:  config,
 		service: service,

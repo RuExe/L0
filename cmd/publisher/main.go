@@ -1,19 +1,15 @@
 package main
 
 import (
-	"L0/core"
-	"L0/publisher/factories"
+	"L0/internal/config"
+	"L0/internal/fakefactory"
 	"encoding/json"
-	"flag"
 	"github.com/nats-io/nats.go"
 	"log"
 )
 
 func main() {
-	config := core.GetConfig()
-
-	log.SetFlags(0)
-	flag.Parse()
+	config := config.GetConfig()
 
 	nc, err := nats.Connect(config.SubscriberConfig.Url)
 	if err != nil {
@@ -22,16 +18,7 @@ func main() {
 	defer nc.Close()
 
 	subj := "foo"
-	args := flag.Args()
-
-	var msg []byte
-	if len(args) == 1 {
-		args := flag.Args()
-		msg = []byte(args[0])
-
-	} else {
-		msg, _ = json.Marshal(factories.CreateFakeOrder())
-	}
+	msg, _ := json.Marshal(fakefactory.CreateFakeOrder())
 
 	nc.Publish(subj, msg)
 	nc.Flush()

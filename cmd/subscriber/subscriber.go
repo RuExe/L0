@@ -1,8 +1,9 @@
-package classes
+package subscriber
 
 import (
-	"L0/core"
-	"L0/subscriber/repositories"
+	"L0/internal/config"
+	"L0/internal/domain"
+	"L0/internal/repository"
 	"encoding/json"
 	"github.com/nats-io/nats.go"
 	"log"
@@ -10,11 +11,11 @@ import (
 )
 
 type Subscriber struct {
-	config  *core.Config
-	storage *repositories.OrderStorage
+	config  *config.Config
+	storage *repository.OrderStorage
 }
 
-func NewSubscriber(config *core.Config, storage *repositories.OrderStorage) *Subscriber {
+func NewSubscriber(config *config.Config, storage *repository.OrderStorage) *Subscriber {
 	return &Subscriber{
 		config:  config,
 		storage: storage,
@@ -46,7 +47,7 @@ func (s *Subscriber) Subscribe() {
 }
 
 func (s *Subscriber) action(m *nats.Msg, i int) {
-	order := core.Order{}
+	order := domain.Order{}
 	err := json.Unmarshal(m.Data, &order)
 	if err != nil {
 		log.Println(err)

@@ -1,23 +1,24 @@
-package repositories
+package pstgr
 
 import (
-	"L0/core"
+	"L0/internal/domain"
+	"L0/internal/repository"
 	"log"
 )
 
 type OrderRepository struct {
-	store *Store
+	store *repository.Store
 }
 
-func NewOrderRepository(store *Store) *OrderRepository {
+func NewOrderRepository(store *repository.Store) *OrderRepository {
 	return &OrderRepository{
 		store: store,
 	}
 }
 
-func (r *OrderRepository) Add(order core.Order) {
-	_, err := r.store.db.Exec(
-		`INSERT INTO orders (order_uid, track_number, entry, delivery, payment, items, locale, internal_signature,customer_id, delivery_service,shardkey, sm_id, date_created, oof_shard) 
+func (r *OrderRepository) Add(order domain.Order) {
+	_, err := r.store.Db.Exec(
+		`INSERT INTO orders (order_uid, track_number, entry, delivery, payment, items, locale, internal_signature,customer_id, delivery_service, shardkey, sm_id, date_created, oof_shard) 
 			   VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`,
 		order.OrderUid,
 		order.TrackNumber,
@@ -40,16 +41,16 @@ func (r *OrderRepository) Add(order core.Order) {
 	}
 }
 
-func (r *OrderRepository) All() []core.Order {
-	rows, err := r.store.db.Query("SELECT * FROM orders")
+func (r *OrderRepository) All() []domain.Order {
+	rows, err := r.store.Db.Query("SELECT * FROM orders")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
 
-	orders := make([]core.Order, 0)
+	orders := make([]domain.Order, 0)
 	for rows.Next() {
-		order := core.Order{}
+		order := domain.Order{}
 		err := rows.Scan(
 			&order.OrderUid,
 			&order.TrackNumber,
@@ -79,10 +80,10 @@ func (r *OrderRepository) All() []core.Order {
 	return orders
 }
 
-func (r *OrderRepository) GetById(id string) (*core.Order, error) {
-	order := new(core.Order)
+func (r *OrderRepository) GetById(id string) (*domain.Order, error) {
+	order := new(domain.Order)
 
-	if err := r.store.db.QueryRow(
+	if err := r.store.Db.QueryRow(
 		"SELECT * FROM orders WHERE order_uid = $1",
 		id,
 	).Scan(

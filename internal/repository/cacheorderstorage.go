@@ -1,17 +1,17 @@
-package repositories
+package repository
 
 import (
-	"L0/core"
+	"L0/internal/domain"
 	"errors"
 )
 
 type CacheOrderStorage struct {
 	storage *OrderStorage
-	orders  map[string]core.Order
+	orders  map[string]domain.Order
 }
 
 func NewCacheOrderStorage(storage *OrderStorage) *CacheOrderStorage {
-	orders := make(map[string]core.Order)
+	orders := make(map[string]domain.Order)
 	for _, v := range (*storage).All() {
 		orders[v.OrderUid] = v
 	}
@@ -22,13 +22,13 @@ func NewCacheOrderStorage(storage *OrderStorage) *CacheOrderStorage {
 	}
 }
 
-func (s *CacheOrderStorage) Add(order core.Order) {
+func (s *CacheOrderStorage) Add(order domain.Order) {
 	(*s.storage).Add(order)
 	s.orders[order.OrderUid] = order
 }
 
-func (s *CacheOrderStorage) All() []core.Order {
-	orders := make([]core.Order, 0)
+func (s *CacheOrderStorage) All() []domain.Order {
+	orders := make([]domain.Order, 0)
 	for _, v := range s.orders {
 		orders = append(orders, v)
 	}
@@ -36,7 +36,7 @@ func (s *CacheOrderStorage) All() []core.Order {
 	return orders
 }
 
-func (s CacheOrderStorage) GetById(id string) (*core.Order, error) {
+func (s *CacheOrderStorage) GetById(id string) (*domain.Order, error) {
 	val, ok := s.orders[id]
 
 	err := error(nil)

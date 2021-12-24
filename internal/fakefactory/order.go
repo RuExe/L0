@@ -1,13 +1,13 @@
-package factories
+package fakefactory
 
 import (
-	"L0/core"
+	"L0/internal/domain"
 	"time"
 )
 
-func CreateFakeOrder() core.Order {
-	return core.Order{
-		OrderUid:          "1",
+func CreateFakeOrder() domain.Order {
+	return domain.Order{
+		OrderUid:          "2",
 		TrackNumber:       "WBILMTESTTRACK",
 		Entry:             "WBIL",
 		Delivery:          "createFakeDelivery()",
@@ -24,8 +24,8 @@ func CreateFakeOrder() core.Order {
 	}
 }
 
-func createFakeDelivery() core.Delivery {
-	return core.Delivery{
+func createFakeDelivery() domain.Delivery {
+	return domain.Delivery{
 		Name:    "Test Testov",
 		Phone:   "+9720000000",
 		Zip:     "2639809",
@@ -36,8 +36,8 @@ func createFakeDelivery() core.Delivery {
 	}
 }
 
-func createFakePayment() core.Payment {
-	return core.Payment{
+func createFakePayment() domain.Payment {
+	return domain.Payment{
 		Transaction:  "b563feb7b2b84b6test",
 		RequestId:    "",
 		Currency:     "USD",
@@ -51,8 +51,8 @@ func createFakePayment() core.Payment {
 	}
 }
 
-func createFakeItems(count int) []core.Item {
-	var items []core.Item
+func createFakeItems(count int) []domain.Item {
+	var items []domain.Item
 
 	for i := 0; i < count; i++ {
 		items = append(items, createFakeItem())
@@ -61,8 +61,8 @@ func createFakeItems(count int) []core.Item {
 	return items
 }
 
-func createFakeItem() core.Item {
-	return core.Item{
+func createFakeItem() domain.Item {
+	return domain.Item{
 		ChrtId:      9934930,
 		TrackNumber: "WBILMTESTTRACK",
 		Price:       453,

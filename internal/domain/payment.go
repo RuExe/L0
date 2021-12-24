@@ -1,4 +1,4 @@
-package core
+package domain
 
 type Payment struct {
 	Transaction  string
