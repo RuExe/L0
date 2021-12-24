@@ -2,18 +2,30 @@ package classes
 
 import (
 	"L0/core"
-	"L0/subscriber/services"
+	"L0/subscriber/repositories"
 	"encoding/json"
 	"github.com/nats-io/nats.go"
 	"log"
 	"time"
 )
 
-func Subscribe(config *core.Config, service *services.OrderService) {
+type Subscriber struct {
+	config  *core.Config
+	storage *repositories.OrderStorage
+}
+
+func NewSubscriber(config *core.Config, storage *repositories.OrderStorage) *Subscriber {
+	return &Subscriber{
+		config:  config,
+		storage: storage,
+	}
+}
+
+func (s *Subscriber) Subscribe() {
 	opts := []nats.Option{nats.Name("NATS Sample Subscriber")}
 	opts = setupConnOptions(opts)
 
-	nc, err := nats.Connect(config.Url, opts...)
+	nc, err := nats.Connect(s.config.SubscriberConfig.Url, opts...)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -22,7 +34,7 @@ func Subscribe(config *core.Config, service *services.OrderService) {
 
 	nc.Subscribe(subj, func(msg *nats.Msg) {
 		i += 1
-		Action(service, msg, i)
+		s.action(msg, i)
 	})
 	nc.Flush()
 
@@ -33,7 +45,7 @@ func Subscribe(config *core.Config, service *services.OrderService) {
 	log.Printf("Listening on [%s]", subj)
 }
 
-func Action(service *services.OrderService, m *nats.Msg, i int) {
+func (s *Subscriber) action(m *nats.Msg, i int) {
 	order := core.Order{}
 	err := json.Unmarshal(m.Data, &order)
 	if err != nil {
@@ -41,7 +53,7 @@ func Action(service *services.OrderService, m *nats.Msg, i int) {
 		return
 	}
 
-	service.AddOrder(order)
+	(*s.storage).Add(order)
 	log.Printf("[#%d] Received on [%s]: '%s'", i, m.Subject, string(m.Data))
 }
 

@@ -39,9 +39,7 @@ func (s *Store) Close() {
 
 func (s *Store) Order() *OrderRepository {
 	if s.orderRepository == nil {
-		s.orderRepository = &OrderRepository{
-			store: s,
-		}
+		s.orderRepository = NewOrderRepository(s)
 	}
 
 	return s.orderRepository

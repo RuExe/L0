@@ -7,10 +7,10 @@ type Config struct {
 	*DBConfig
 }
 
-func NewConfig() *Config {
+func GetConfig() *Config {
 	return &Config{
-		SubscriberConfig: newSubscriberConfig(),
-		DBConfig:         newDbConfig(),
+		SubscriberConfig: getSubscriberConfig(),
+		DBConfig:         getDbConfig(),
 	}
 }
 
@@ -19,7 +19,7 @@ type SubscriberConfig struct {
 	ServerPort string
 }
 
-func newSubscriberConfig() *SubscriberConfig {
+func getSubscriberConfig() *SubscriberConfig {
 	return &SubscriberConfig{
 		Url:        nats.DefaultURL,
 		ServerPort: ":8080",
@@ -31,7 +31,7 @@ type DBConfig struct {
 	Driver string
 }
 
-func newDbConfig() *DBConfig {
+func getDbConfig() *DBConfig {
 	return &DBConfig{
 		Url:    "user=postgres password=11111 dbname=test sslmode=disable",
 		Driver: "postgres",

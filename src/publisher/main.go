@@ -10,12 +10,12 @@ import (
 )
 
 func main() {
-	config := core.NewConfig()
+	config := core.GetConfig()
 
 	log.SetFlags(0)
 	flag.Parse()
 
-	nc, err := nats.Connect(config.Url)
+	nc, err := nats.Connect(config.SubscriberConfig.Url)
 	if err != nil {
 		log.Fatal(err)
 	}

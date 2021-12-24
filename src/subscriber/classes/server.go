@@ -2,50 +2,32 @@ package classes
 
 import (
 	"L0/core"
-	"L0/subscriber/repositories"
 	"L0/subscriber/services"
 	"encoding/json"
-	"log"
 	"net/http"
 )
 
 type Server struct {
 	config  *core.Config
-	store   *repositories.Store
 	service *services.OrderService
 }
 
-func NewServer(config *core.Config) *Server {
+func NewServer(config *core.Config, service *services.OrderService) *Server {
 	return &Server{
-		config: config,
+		config:  config,
+		service: service,
 	}
 }
 
 func (s *Server) Start() error {
-	if err := s.configureStore(); err != nil {
-		log.Fatal(err)
-	}
-
-	s.service = services.NewOrderService(s.store.Order())
-
 	s.configureRoutes()
 
 	return http.ListenAndServe(s.config.ServerPort, nil)
 }
 
-func (s *Server) configureStore() error {
-	st := repositories.NewStore(s.config)
-	if err := st.Open(); err != nil {
-		return err
-	}
-
-	s.store = st
-
-	return nil
-}
-
 func (s *Server) configureRoutes() {
 	http.HandleFunc("/", s.handleGetOrder)
+	http.HandleFunc("/List", s.handleGetOrderList)
 }
 
 func (s *Server) handleGetOrder(res http.ResponseWriter, req *http.Request) {
@@ -60,6 +42,19 @@ func (s *Server) handleGetOrder(res http.ResponseWriter, req *http.Request) {
 	order, err := s.service.GetOrder(id)
 	if err == nil {
 		result, _ := json.Marshal(order)
+		res.Write(result)
+	}
+}
+
+func (s *Server) handleGetOrderList(res http.ResponseWriter, _ *http.Request) {
+	res.Header().Set(
+		"Content-Type",
+		"application/json",
+	)
+
+	orders, err := s.service.GetOrderList()
+	if err == nil {
+		result, _ := json.Marshal(orders)
 		res.Write(result)
 	}
 }
