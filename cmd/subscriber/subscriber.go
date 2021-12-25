@@ -28,7 +28,8 @@ func (s *Subscriber) Subscribe() {
 
 	nc, err := nats.Connect(s.config.SubscriberConfig.Url, opts...)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 
 	subj, i := "foo", 0

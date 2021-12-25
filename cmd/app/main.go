@@ -5,6 +5,7 @@ import (
 	"L0/cmd/subscriber"
 	"L0/internal/config"
 	"L0/internal/repository"
+	"L0/internal/repository/pstgr"
 	"L0/internal/service"
 	"log"
 	"runtime"
@@ -13,7 +14,7 @@ import (
 func main() {
 	config := config.GetConfig()
 
-	store := repository.NewStore(config)
+	store := pstgr.NewStore(config)
 	if err := store.Open(); err != nil {
 		log.Fatal(err)
 	}

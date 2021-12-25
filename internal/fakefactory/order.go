@@ -7,7 +7,7 @@ import (
 
 func CreateFakeOrder() domain.Order {
 	return domain.Order{
-		OrderUid:          "2",
+		OrderUid:          "3",
 		TrackNumber:       "WBILMTESTTRACK",
 		Entry:             "WBIL",
 		Delivery:          "createFakeDelivery()",

@@ -1,8 +1,7 @@
-package repository
+package pstgr
 
 import (
 	"L0/internal/config"
-	"L0/internal/repository/pstgr"
 	"database/sql"
 	_ "github.com/lib/pq"
 )
@@ -10,7 +9,7 @@ import (
 type Store struct {
 	config          *config.Config
 	Db              *sql.DB
-	orderRepository *pstgr.OrderRepository
+	orderRepository *OrderRepository
 }
 
 func NewStore(config *config.Config) *Store {
@@ -38,9 +37,9 @@ func (s *Store) Close() {
 	s.Db.Close()
 }
 
-func (s *Store) Order() *pstgr.OrderRepository {
+func (s *Store) Order() *OrderRepository {
 	if s.orderRepository == nil {
-		s.orderRepository = pstgr.NewOrderRepository(s)
+		s.orderRepository = NewOrderRepository(s)
 	}
 
 	return s.orderRepository

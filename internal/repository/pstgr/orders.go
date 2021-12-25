@@ -2,15 +2,14 @@ package pstgr
 
 import (
 	"L0/internal/domain"
-	"L0/internal/repository"
 	"log"
 )
 
 type OrderRepository struct {
-	store *repository.Store
+	store *Store
 }
 
-func NewOrderRepository(store *repository.Store) *OrderRepository {
+func NewOrderRepository(store *Store) *OrderRepository {
 	return &OrderRepository{
 		store: store,
 	}
