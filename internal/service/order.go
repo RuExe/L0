@@ -20,10 +20,9 @@ func (s *OrderService) AddOrder(order domain.Order) {
 }
 
 func (s *OrderService) GetOrderList() ([]domain.Order, error) {
-	return (*s.storage).All(), nil
+	return (*s.storage).All()
 }
 
-func (s *OrderService) GetOrder(id string) (domain.Order, error) {
-	res, err := (*s.storage).GetById(id)
-	return *res, err
+func (s *OrderService) GetOrder(id int) (domain.Order, error) {
+	return (*s.storage).GetById(id)
 }

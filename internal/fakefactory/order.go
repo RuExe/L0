@@ -7,7 +7,7 @@ import (
 
 func CreateFakeOrder() domain.Order {
 	return domain.Order{
-		OrderUid:          "3",
+		OrderUid:          1,
 		TrackNumber:       "WBILMTESTTRACK",
 		Entry:             "WBIL",
 		Delivery:          "createFakeDelivery()",
@@ -52,10 +52,9 @@ func createFakePayment() domain.Payment {
 }
 
 func createFakeItems(count int) []domain.Item {
-	var items []domain.Item
-
-	for i := 0; i < count; i++ {
-		items = append(items, createFakeItem())
+	items := make([]domain.Item, count)
+	for i := 0; i < len(items); i++ {
+		items[i] = createFakeItem()
 	}
 
 	return items

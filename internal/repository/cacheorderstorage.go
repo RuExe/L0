@@ -7,12 +7,14 @@ import (
 
 type CacheOrderStorage struct {
 	storage *OrderStorage
-	orders  map[string]domain.Order
+	orders  map[int]domain.Order
 }
 
 func NewCacheOrderStorage(storage *OrderStorage) *CacheOrderStorage {
-	orders := make(map[string]domain.Order)
-	for _, v := range (*storage).All() {
+	orders := make(map[int]domain.Order)
+
+	all, _ := (*storage).All()
+	for _, v := range all {
 		orders[v.OrderUid] = v
 	}
 
@@ -27,16 +29,16 @@ func (s *CacheOrderStorage) Add(order domain.Order) {
 	s.orders[order.OrderUid] = order
 }
 
-func (s *CacheOrderStorage) All() []domain.Order {
+func (s *CacheOrderStorage) All() ([]domain.Order, error) {
 	orders := make([]domain.Order, 0)
 	for _, v := range s.orders {
 		orders = append(orders, v)
 	}
 
-	return orders
+	return orders, nil
 }
 
-func (s *CacheOrderStorage) GetById(id string) (*domain.Order, error) {
+func (s *CacheOrderStorage) GetById(id int) (domain.Order, error) {
 	val, ok := s.orders[id]
 
 	err := error(nil)
@@ -44,5 +46,5 @@ func (s *CacheOrderStorage) GetById(id string) (*domain.Order, error) {
 		err = errors.New("order doesn't exist")
 	}
 
-	return &val, err
+	return val, err
 }

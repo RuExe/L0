@@ -4,7 +4,9 @@ import (
 	"L0/internal/config"
 	"L0/internal/service"
 	"encoding/json"
+	"log"
 	"net/http"
+	"strconv"
 )
 
 type Server struct {
@@ -37,7 +39,12 @@ func (s *Server) handleGetOrder(res http.ResponseWriter, req *http.Request) {
 	)
 
 	query := req.URL.Query()
-	id := query.Get("id")
+	idStr := query.Get("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		log.Print(err)
+		return
+	}
 
 	order, err := s.service.GetOrder(id)
 	if err == nil {

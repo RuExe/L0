@@ -20,12 +20,12 @@ func main() {
 	}
 
 	var rep repository.OrderStorage = store.Order()
-	var storage repository.OrderStorage = repository.NewCacheOrderStorage(&rep)
+	//var storage repository.OrderStorage = repository.NewCacheOrderStorage(&rep)
 
-	subscriber := subscriber.NewSubscriber(config, &storage)
+	subscriber := subscriber.NewSubscriber(config, &rep)
 	go subscriber.Subscribe()
 
-	var orderService = service.NewOrderService(&storage)
+	var orderService = service.NewOrderService(&rep)
 
 	server := server.NewServer(config, orderService)
 	go server.Start()

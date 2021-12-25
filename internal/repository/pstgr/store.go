@@ -2,13 +2,13 @@ package pstgr
 
 import (
 	"L0/internal/config"
-	"database/sql"
+	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
 
 type Store struct {
 	config          *config.Config
-	Db              *sql.DB
+	db              *sqlx.DB
 	orderRepository *OrderRepository
 }
 
@@ -19,7 +19,7 @@ func NewStore(config *config.Config) *Store {
 }
 
 func (s *Store) Open() error {
-	db, err := sql.Open(s.config.DBConfig.Driver, s.config.DBConfig.Url)
+	db, err := sqlx.Connect(s.config.DBConfig.Driver, s.config.DBConfig.Url)
 	if err != nil {
 		return err
 	}
@@ -28,13 +28,13 @@ func (s *Store) Open() error {
 		return err
 	}
 
-	s.Db = db
+	s.db = db
 
 	return nil
 }
 
 func (s *Store) Close() {
-	s.Db.Close()
+	s.db.Close()
 }
 
 func (s *Store) Order() *OrderRepository {

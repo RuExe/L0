@@ -1,9 +1,22 @@
+CREATE TABLE deliveries
+(
+    id      serial PRIMARY KEY,
+    name    varchar not null,
+    phone   varchar not null,
+    zip     varchar not null,
+    city    varchar not null,
+    address varchar not null,
+    region  varchar not null,
+    email   varchar not null
+);
+
 CREATE TABLE orders
 (
-    order_uid          varchar PRIMARY KEY,
+    id                 serial PRIMARY KEY,
     track_number       varchar     not null,
     entry              varchar(30) not null,
     delivery           varchar     not null,
+--     delivery_id        int REFERENCES deliveries (id),
     payment            varchar     not null,
     items              varchar     not null,
     locale             varchar(10) not null,

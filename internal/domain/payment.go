@@ -1,14 +1,15 @@
 package domain
 
 type Payment struct {
-	Transaction  string
-	RequestId    string
-	Currency     string
-	Provider     string
-	Amount       int
-	PaymentDt    int
-	Bank         string
-	DeliveryCost int
-	GoodsTotal   int
-	CustomFee    int
+	Id           int    `db:"id"`
+	Transaction  string `db:"transaction"`
+	RequestId    string `db:"request_id"`
+	Currency     string `db:"currency"`
+	Provider     string `db:"provider"`
+	Amount       int    `db:"amount"`
+	PaymentDt    int    `db:"payment_dt"`
+	Bank         string `db:"bank"`
+	DeliveryCost int    `db:"delivery_cost"`
+	GoodsTotal   int    `db:"goods_total"`
+	CustomFee    int    `db:"custom_fee"`
 }

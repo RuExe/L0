@@ -6,6 +6,7 @@ require github.com/nats-io/nats.go v1.13.1-0.20211122170419-d7c1d78a50fc
 
 require (
 	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/jmoiron/sqlx v1.3.4 // indirect
 	github.com/lib/pq v1.10.4 // indirect
 	github.com/nats-io/nats-server/v2 v2.6.6 // indirect
 	github.com/nats-io/nkeys v0.3.0 // indirect

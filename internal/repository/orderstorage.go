@@ -6,6 +6,6 @@ import (
 
 type OrderStorage interface {
 	Add(order domain.Order)
-	All() []domain.Order
-	GetById(id string) (*domain.Order, error)
+	All() ([]domain.Order, error)
+	GetById(id int) (domain.Order, error)
 }

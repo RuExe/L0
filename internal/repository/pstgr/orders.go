@@ -16,92 +16,55 @@ func NewOrderRepository(store *Store) *OrderRepository {
 }
 
 func (r *OrderRepository) Add(order domain.Order) {
-	_, err := r.store.Db.Exec(
-		`INSERT INTO orders (order_uid, track_number, entry, delivery, payment, items, locale, internal_signature,customer_id, delivery_service, shardkey, sm_id, date_created, oof_shard) 
-			   VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`,
-		order.OrderUid,
-		order.TrackNumber,
-		order.Entry,
-		order.Delivery,
-		order.Payment,
-		order.Items,
-		order.Locale,
-		order.InternalSignature,
-		order.CustomerId,
-		order.DeliveryService,
-		order.Shardkey,
-		order.SmId,
-		order.DateCreated,
-		order.OofShard,
-	)
-
+	tx, err := r.store.db.Beginx()
 	if err != nil {
 		log.Fatal(err)
 	}
-}
 
-func (r *OrderRepository) All() []domain.Order {
-	rows, err := r.store.Db.Query("SELECT * FROM orders")
-	if err != nil {
+	query := `INSERT INTO orders 
+              VALUES (:id, :track_number, :entry, :delivery, :payment, :items, :locale, :internal_signature, :customer_id, :delivery_service, :shardkey, :sm_id, :date_created, :oof_shard)`
+	if _, err = tx.NamedExec(query, &order); err != nil {
+		tx.Rollback()
 		log.Fatal(err)
 	}
-	defer rows.Close()
 
-	orders := make([]domain.Order, 0)
-	for rows.Next() {
-		order := domain.Order{}
-		err := rows.Scan(
-			&order.OrderUid,
-			&order.TrackNumber,
-			&order.Entry,
-			&order.Delivery,
-			&order.Payment,
-			&order.Items,
-			&order.Locale,
-			&order.InternalSignature,
-			&order.CustomerId,
-			&order.DeliveryService,
-			&order.Shardkey,
-			&order.SmId,
-			&order.DateCreated,
-			&order.OofShard,
-		)
-		if err != nil {
+	if err = tx.Commit(); err != nil {
+		log.Fatal(err)
+	}
+
+	/*	delivery := order.Delivery
+		query := `INSERT INTO deliveries (name, phone, zip, city, address, region, email)
+				  VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`
+		if err := r.store.db.QueryRow(query,
+			delivery.Name,
+			delivery.Phone,
+			delivery.Zip,
+			delivery.City,
+			delivery.Address,
+			delivery.Region,
+			delivery.Email,
+		).Scan(
+			&delivery.Id,
+		); err != nil {
 			log.Fatal(err)
-		}
-		orders = append(orders, order)
-	}
-
-	if err = rows.Err(); err != nil {
-		log.Fatal(err)
-	}
-
-	return orders
+		}*/
 }
 
-func (r *OrderRepository) GetById(id string) (*domain.Order, error) {
-	order := new(domain.Order)
+func (r *OrderRepository) All() ([]domain.Order, error) {
+	orders := make([]domain.Order, 0)
+	query := "SELECT * FROM orders"
+	if err := r.store.db.Select(&orders, query); err != nil {
+		return orders, err
+	}
 
-	if err := r.store.Db.QueryRow(
-		"SELECT * FROM orders WHERE order_uid = $1",
-		id,
-	).Scan(
-		&order.OrderUid,
-		&order.TrackNumber,
-		&order.Entry,
-		&order.Delivery,
-		&order.Payment,
-		&order.Items,
-		&order.Locale,
-		&order.InternalSignature,
-		&order.CustomerId,
-		&order.DeliveryService,
-		&order.Shardkey,
-		&order.SmId,
-		&order.DateCreated,
-		&order.OofShard,
-	); err != nil {
-		return nil, err
+	return orders, nil
+}
+
+func (r *OrderRepository) GetById(id int) (domain.Order, error) {
+	var order domain.Order
+	query := "SELECT * FROM orders WHERE id = $1"
+	if err := r.store.db.Get(&order, query, id); err != nil {
+		return order, err
 	}
 
 	return order, nil
