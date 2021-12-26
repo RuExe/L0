@@ -23,6 +23,6 @@ func (s *OrderService) GetOrderList() ([]domain.Order, error) {
 	return (*s.storage).All()
 }
 
-func (s *OrderService) GetOrder(id int) (domain.Order, error) {
+func (s *OrderService) GetOrder(id string) (domain.Order, error) {
 	return (*s.storage).GetById(id)
 }

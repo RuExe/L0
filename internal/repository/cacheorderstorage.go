@@ -7,11 +7,11 @@ import (
 
 type CacheOrderStorage struct {
 	storage *OrderStorage
-	orders  map[int]domain.Order
+	orders  map[string]domain.Order
 }
 
 func NewCacheOrderStorage(storage *OrderStorage) *CacheOrderStorage {
-	orders := make(map[int]domain.Order)
+	orders := make(map[string]domain.Order)
 
 	all, _ := (*storage).All()
 	for _, v := range all {
@@ -38,7 +38,7 @@ func (s *CacheOrderStorage) All() ([]domain.Order, error) {
 	return orders, nil
 }
 
-func (s *CacheOrderStorage) GetById(id int) (domain.Order, error) {
+func (s *CacheOrderStorage) GetById(id string) (domain.Order, error) {
 	val, ok := s.orders[id]
 
 	err := error(nil)

@@ -2,17 +2,18 @@ package fakefactory
 
 import (
 	"L0/internal/domain"
+	"fmt"
 	"time"
 )
 
 func CreateFakeOrder() domain.Order {
 	return domain.Order{
-		OrderUid:          1,
+		OrderUid:          "b563feb7b2b84b6test",
 		TrackNumber:       "WBILMTESTTRACK",
 		Entry:             "WBIL",
-		Delivery:          "createFakeDelivery()",
-		Payment:           "createFakePayment()",
-		Items:             "createFakeItems(1)",
+		Delivery:          createFakeDelivery(),
+		Payment:           createFakePayment(),
+		Items:             createFakeItems(1),
 		Locale:            "en",
 		InternalSignature: "",
 		CustomerId:        "test",
@@ -54,24 +55,19 @@ func createFakePayment() domain.Payment {
 func createFakeItems(count int) []domain.Item {
 	items := make([]domain.Item, count)
 	for i := 0; i < len(items); i++ {
-		items[i] = createFakeItem()
+		items[i] = domain.Item{
+			ChrtId:      9934930,
+			TrackNumber: "WBILMTESTTRACK",
+			Price:       453,
+			Rid:         fmt.Sprint("ab4219087a764ae0btest%s", i),
+			Name:        "Mascaras",
+			Sale:        30,
+			Size:        "0",
+			TotalPrice:  317,
+			NmId:        2389212,
+			Brand:       "Vivienne Sabo",
+			Status:      202,
+		}
 	}
-
 	return items
-}
-
-func createFakeItem() domain.Item {
-	return domain.Item{
-		ChrtId:      9934930,
-		TrackNumber: "WBILMTESTTRACK",
-		Price:       453,
-		Rid:         "ab4219087a764ae0btest",
-		Name:        "Mascaras",
-		Sale:        30,
-		Size:        "0",
-		TotalPrice:  317,
-		NmId:        2389212,
-		Brand:       "Vivienne Sabo",
-		Status:      202,
-	}
 }

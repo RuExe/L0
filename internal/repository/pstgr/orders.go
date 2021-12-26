@@ -21,33 +21,86 @@ func (r *OrderRepository) Add(order domain.Order) {
 		log.Fatal(err)
 	}
 
-	query := `INSERT INTO orders 
-              VALUES (:id, :track_number, :entry, :delivery, :payment, :items, :locale, :internal_signature, :customer_id, :delivery_service, :shardkey, :sm_id, :date_created, :oof_shard)`
-	if _, err = tx.NamedExec(query, &order); err != nil {
+	var deliveryId int
+	delivery := order.Delivery
+	query := `INSERT INTO deliveries (name, phone, zip, city, address, region, email)
+			  VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`
+	if err = tx.QueryRowx(query,
+		delivery.Name,
+		delivery.Phone,
+		delivery.Zip,
+		delivery.City,
+		delivery.Address,
+		delivery.Region,
+		delivery.Email,
+	).Scan(&deliveryId); err != nil {
 		tx.Rollback()
 		log.Fatal(err)
+	}
+
+	query = `INSERT INTO orders 
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`
+	if _, err = tx.Exec(query,
+		order.OrderUid,
+		order.TrackNumber,
+		order.Entry,
+		deliveryId,
+		order.Locale,
+		order.InternalSignature,
+		order.CustomerId,
+		order.DeliveryService,
+		order.Shardkey,
+		order.SmId,
+		order.DateCreated,
+		order.OofShard,
+	); err != nil {
+		tx.Rollback()
+		log.Fatal(err)
+	}
+
+	payment := order.Payment
+	query = `INSERT INTO payments 
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`
+	if _, err = tx.Exec(query,
+		payment.Transaction,
+		payment.RequestId,
+		payment.Currency,
+		payment.Provider,
+		payment.Amount,
+		payment.PaymentDt,
+		payment.Bank,
+		payment.DeliveryCost,
+		payment.GoodsTotal,
+		payment.CustomFee,
+	); err != nil {
+		tx.Rollback()
+		log.Fatal(err)
+	}
+
+	query = `INSERT INTO items 
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`
+	for _, item := range order.Items {
+		if _, err = tx.Exec(query,
+			item.Rid,
+			item.ChrtId,
+			item.TrackNumber,
+			item.Price,
+			item.Name,
+			item.Sale,
+			item.Size,
+			item.TotalPrice,
+			item.NmId,
+			item.Brand,
+			item.Status,
+		); err != nil {
+			tx.Rollback()
+			log.Fatal(err)
+		}
 	}
 
 	if err = tx.Commit(); err != nil {
 		log.Fatal(err)
 	}
-
-	/*	delivery := order.Delivery
-		query := `INSERT INTO deliveries (name, phone, zip, city, address, region, email)
-				  VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`
-		if err := r.store.db.QueryRow(query,
-			delivery.Name,
-			delivery.Phone,
-			delivery.Zip,
-			delivery.City,
-			delivery.Address,
-			delivery.Region,
-			delivery.Email,
-		).Scan(
-			&delivery.Id,
-		); err != nil {
-			log.Fatal(err)
-		}*/
 }
 
 func (r *OrderRepository) All() ([]domain.Order, error) {
@@ -60,9 +113,9 @@ func (r *OrderRepository) All() ([]domain.Order, error) {
 	return orders, nil
 }
 
-func (r *OrderRepository) GetById(id int) (domain.Order, error) {
+func (r *OrderRepository) GetById(id string) (domain.Order, error) {
 	var order domain.Order
-	query := "SELECT * FROM orders WHERE id = $1"
+	query := "SELECT * FROM orders WHERE order_uid = $1"
 	if err := r.store.db.Get(&order, query, id); err != nil {
 		return order, err
 	}

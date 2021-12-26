@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"strconv"
 )
 
 type Server struct {
@@ -39,17 +38,14 @@ func (s *Server) handleGetOrder(res http.ResponseWriter, req *http.Request) {
 	)
 
 	query := req.URL.Query()
-	idStr := query.Get("id")
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		log.Print(err)
-		return
-	}
+	id := query.Get("id")
 
 	order, err := s.service.GetOrder(id)
 	if err == nil {
 		result, _ := json.Marshal(order)
 		res.Write(result)
+	} else {
+		log.Println(err)
 	}
 }
 
@@ -63,5 +59,7 @@ func (s *Server) handleGetOrderList(res http.ResponseWriter, _ *http.Request) {
 	if err == nil {
 		result, _ := json.Marshal(orders)
 		res.Write(result)
+	} else {
+		log.Println(err)
 	}
 }

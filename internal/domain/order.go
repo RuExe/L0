@@ -3,12 +3,9 @@ package domain
 import "time"
 
 type Order struct {
-	OrderUid          int       `db:"id"`
+	OrderUid          string    `db:"order_uid"`
 	TrackNumber       string    `db:"track_number"`
 	Entry             string    `db:"entry"`
-	Delivery          string    `db:"delivery"`
-	Payment           string    `db:"payment"`
-	Items             string    `db:"items"`
 	Locale            string    `db:"locale"`
 	InternalSignature string    `db:"internal_signature"`
 	CustomerId        string    `db:"customer_id"`
@@ -17,4 +14,8 @@ type Order struct {
 	SmId              int       `db:"sm_id"`
 	DateCreated       time.Time `db:"date_created"`
 	OofShard          string    `db:"oof_shard"`
+
+	Delivery Delivery
+	Payment  Payment
+	Items    []Item
 }

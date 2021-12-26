@@ -1,7 +1,6 @@
 package domain
 
 type Item struct {
-	Id          int    `db:"id"`
 	ChrtId      int    `db:"chrt_id"`
 	TrackNumber string `db:"track_number"`
 	Price       int    `db:"price"`

@@ -1,7 +1,6 @@
 package domain
 
 type Payment struct {
-	Id           int    `db:"id"`
 	Transaction  string `db:"transaction"`
 	RequestId    string `db:"request_id"`
 	Currency     string `db:"currency"`
