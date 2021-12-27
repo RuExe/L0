@@ -15,7 +15,7 @@ type Order struct {
 	DateCreated       time.Time `db:"date_created"`
 	OofShard          string    `db:"oof_shard"`
 
-	Delivery Delivery
-	Payment  Payment
-	Items    []Item
+	Delivery
+	Payment
+	Items []Item
 }

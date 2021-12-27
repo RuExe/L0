@@ -12,6 +12,16 @@ import (
 )
 
 func main() {
+	//orders := []domain.Order{fakefactory.CreateFakeOrder()}
+	//
+	//mapa := map[string]*domain.Order{
+	//	"test": &orders[0],
+	//}
+	//
+	//mapa["test"].TrackNumber = "asdadafasfas"
+	//
+	//fmt.Println(orders)
+
 	config := config.GetConfig()
 
 	store := pstgr.NewStore(config)

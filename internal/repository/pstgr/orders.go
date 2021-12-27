@@ -2,6 +2,8 @@ package pstgr
 
 import (
 	"L0/internal/domain"
+	"errors"
+	"github.com/jmoiron/sqlx"
 	"log"
 )
 
@@ -105,9 +107,40 @@ func (r *OrderRepository) Add(order domain.Order) {
 
 func (r *OrderRepository) All() ([]domain.Order, error) {
 	orders := make([]domain.Order, 0)
-	query := "SELECT * FROM orders"
+	query := `SELECT 
+			  o.order_uid, o.track_number, o.track_number, o.entry, o.locale, o.internal_signature, o.customer_id, o.delivery_service,
+			  d.id, d."name", d.phone, d.zip, d.city, d.address, d.region, d.email,
+			  pay."transaction", pay.request_id, pay.currency, pay.provider, pay.amount, pay.payment_dt, pay.bank, pay.delivery_cost, pay.goods_total, pay.custom_fee
+			  FROM orders o 
+			  JOIN deliveries d ON o.delivery_id = d.id
+			  JOIN payments pay ON pay.transaction = o.order_uid`
 	if err := r.store.db.Select(&orders, query); err != nil {
 		return orders, err
+	}
+
+	tracks := make([]string, len(orders))
+	for _, v := range orders {
+		tracks = append(tracks, v.TrackNumber)
+	}
+
+	query, args, err := sqlx.In("SELECT * FROM items WHERE track_number IN (?)", tracks)
+	if err != nil {
+		log.Fatal(err)
+	}
+	query = r.store.db.Rebind(query)
+
+	items := make([]domain.Item, 0)
+	if err := r.store.db.Select(&items, query, args...); err != nil {
+		log.Fatal(err)
+	}
+
+	ordersMap := make(map[string]*domain.Order, len(orders))
+	for i := range orders {
+		ordersMap[orders[i].TrackNumber] = &orders[i]
+	}
+
+	for _, v := range items {
+		ordersMap[v.TrackNumber].Items = []domain.Item{v}
 	}
 
 	return orders, nil
@@ -115,10 +148,5 @@ func (r *OrderRepository) All() ([]domain.Order, error) {
 
 func (r *OrderRepository) GetById(id string) (domain.Order, error) {
 	var order domain.Order
-	query := "SELECT * FROM orders WHERE order_uid = $1"
-	if err := r.store.db.Get(&order, query, id); err != nil {
-		return order, err
-	}
-
-	return order, nil
+	return order, errors.New("not implemented")
 }
