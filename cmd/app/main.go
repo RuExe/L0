@@ -12,16 +12,6 @@ import (
 )
 
 func main() {
-	//orders := []domain.Order{fakefactory.CreateFakeOrder()}
-	//
-	//mapa := map[string]*domain.Order{
-	//	"test": &orders[0],
-	//}
-	//
-	//mapa["test"].TrackNumber = "asdadafasfas"
-	//
-	//fmt.Println(orders)
-
 	config := config.GetConfig()
 
 	store := pstgr.NewStore(config)
@@ -30,12 +20,12 @@ func main() {
 	}
 
 	var rep repository.OrderStorage = store.Order()
-	//var storage repository.OrderStorage = repository.NewCacheOrderStorage(&rep)
+	var storage repository.OrderStorage = repository.NewCacheOrderStorage(&rep)
 
-	subscriber := subscriber.NewSubscriber(config, &rep)
+	subscriber := subscriber.NewSubscriber(config, &storage)
 	go subscriber.Subscribe()
 
-	var orderService = service.NewOrderService(&rep)
+	var orderService = service.NewOrderService(&storage)
 
 	server := server.NewServer(config, orderService)
 	go server.Start()

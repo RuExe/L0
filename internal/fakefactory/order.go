@@ -8,8 +8,8 @@ import (
 
 func CreateFakeOrder() domain.Order {
 	return domain.Order{
-		OrderUid:          "b563feb7b2b84b6test",
-		TrackNumber:       "WBILMTESTTRACK",
+		OrderUid:          "b563feb7b2b84b6test2",
+		TrackNumber:       "WBILMTESTTRACK2",
 		Entry:             "WBIL",
 		Delivery:          createFakeDelivery(),
 		Payment:           createFakePayment(),
@@ -39,9 +39,9 @@ func createFakeDelivery() domain.Delivery {
 
 func createFakePayment() domain.Payment {
 	return domain.Payment{
-		Transaction:  "b563feb7b2b84b6test",
+		Transaction:  "b563feb7b2b84b6test2",
 		RequestId:    "",
-		Currency:     "USD",
+		Currency:     "RU",
 		Provider:     "wbpay",
 		Amount:       1817,
 		PaymentDt:    1637907727,
@@ -57,9 +57,9 @@ func createFakeItems(count int) []domain.Item {
 	for i := 0; i < len(items); i++ {
 		items[i] = domain.Item{
 			ChrtId:      9934930,
-			TrackNumber: "WBILMTESTTRACK",
+			TrackNumber: "WBILMTESTTRACK2",
 			Price:       453,
-			Rid:         fmt.Sprint("ab4219087a764ae0btest%s", i),
+			Rid:         fmt.Sprint("ab4219087a764ae0btest22%s", i),
 			Name:        "Mascaras",
 			Sale:        30,
 			Size:        "0",

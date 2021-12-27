@@ -140,7 +140,7 @@ func (r *OrderRepository) All() ([]domain.Order, error) {
 	}
 
 	for _, v := range items {
-		ordersMap[v.TrackNumber].Items = []domain.Item{v}
+		ordersMap[v.TrackNumber].Items = append(ordersMap[v.TrackNumber].Items, v)
 	}
 
 	return orders, nil
