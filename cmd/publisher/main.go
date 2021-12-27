@@ -17,10 +17,10 @@ func main() {
 	}
 	defer nc.Close()
 
-	subj := "foo"
+	subj := config.SubscriberConfig.Subject
 	msg, _ := json.Marshal(fakefactory.CreateFakeOrder())
 
-	nc.Publish(subj, msg)
+	nc.Publish(config.SubscriberConfig.Subject, msg)
 	nc.Flush()
 
 	if err := nc.LastError(); err != nil {
