@@ -118,6 +118,10 @@ func (r *OrderRepository) All() ([]domain.Order, error) {
 		return orders, err
 	}
 
+	if len(orders) == 0 {
+		return orders, nil
+	}
+
 	tracks := make([]string, len(orders))
 	for _, v := range orders {
 		tracks = append(tracks, v.TrackNumber)

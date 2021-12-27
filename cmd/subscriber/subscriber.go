@@ -32,7 +32,7 @@ func (s *Subscriber) Subscribe() {
 		return
 	}
 
-	subj, i := "foo", 0
+	subj, i := s.config.SubscriberConfig.Subject, 0
 
 	nc.Subscribe(subj, func(msg *nats.Msg) {
 		i += 1

@@ -4,13 +4,18 @@ import "github.com/nats-io/nats.go"
 
 type (
 	Config struct {
+		ServerConfig
 		SubscriberConfig
 		DBConfig
 	}
 
+	ServerConfig struct {
+		Port string
+	}
+
 	SubscriberConfig struct {
-		Url        string
-		ServerPort string
+		Url     string
+		Subject string
 	}
 
 	DBConfig struct {
@@ -21,15 +26,22 @@ type (
 
 func GetConfig() *Config {
 	return &Config{
+		ServerConfig:     getServerConfig(),
 		SubscriberConfig: getSubscriberConfig(),
 		DBConfig:         getDbConfig(),
 	}
 }
 
+func getServerConfig() ServerConfig {
+	return ServerConfig{
+		Port: ":8080",
+	}
+}
+
 func getSubscriberConfig() SubscriberConfig {
 	return SubscriberConfig{
-		Url:        nats.DefaultURL,
-		ServerPort: ":8080",
+		Url:     nats.DefaultURL,
+		Subject: "foo",
 	}
 }
 

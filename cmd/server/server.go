@@ -23,7 +23,7 @@ func NewServer(config *config.Config, service *service.OrderService) *Server {
 func (s *Server) Start() error {
 	s.configureRoutes()
 
-	return http.ListenAndServe(s.config.ServerPort, nil)
+	return http.ListenAndServe(s.config.ServerConfig.Port, nil)
 }
 
 func (s *Server) configureRoutes() {
